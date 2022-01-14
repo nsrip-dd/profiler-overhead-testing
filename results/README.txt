@@ -11,7 +11,8 @@ The following files contain the output of the tests:
 	Ran every test for 5s, 10 times, with and without CPU profiling,
 	and with 1 or 8 goroutines. GC was disabled for investigating
 	a performance improvement in the JSON benchmark with CPU profiling
-	enabled.
+	enabled. The duration was set to 5s because the benchmark exhausted
+	the memory on my machine when I set it to 20s.
 * all.nogc.httplong.csv
 	all.nogc.csv, but ran the HTTP benchmark for 20s. With only 5s, I
 	saw a somewhat bi-modal distribution in the number of iterations.
