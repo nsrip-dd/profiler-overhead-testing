@@ -63,7 +63,7 @@ GopherCon 2021.
     * HTTP benchmark seemed kind of “bi-modal” in terms of latency. Longer runs were more consistently <1% increase (this table has the longer runs)
 * Go can log GC events. Doing this, I saw that with the CPU profiler turned on, the “heap size target” was increased. This “target” is the next heap size where Go will do garbage collection.
 * So, the extra memory allocated for storing CPU profile samples managed to bump up the GC target just enough that GC events happened less frequently!
-* We can reproduce this with a “ballast”. Basically, allocate a little extra memory that sticks around til the end of the program. In this case, a 2MB ballast was enough.
+* We can reproduce this with a [“ballast”](https://blog.twitch.tv/en/2019/04/10/go-memory-ballast-how-i-learnt-to-stop-worrying-and-love-the-heap/). Basically, allocate a little extra memory that sticks around til the end of the program. In this case, a 2MB ballast was enough.
     * Side note: Memory overhead from recording CPU profiles should be limited to 1) the fixed size buffer that stores stack samples as they are captured, and 2) the hash map that accumulates the samples (stack traces with labels). In theory 2) is bounded by the number of unique stack traces. Applications with many code paths, and/or those which make heavy use of labels, may see more memory usage.
 * Conclusions:
     * Overhead from the profiling activity itself seems small in these micro-benchmarks one you control for other factors, primarily garbage collection.
