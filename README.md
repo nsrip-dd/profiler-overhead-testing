@@ -1,6 +1,6 @@
 These are notes on my first Datadog research week, Jan 10-14 2022. I studied
 the effects of enabling the Go CPU profiler on CPU usage, benchmark latency,
-and memory usage. Building off of Felix’s [work]() which he [presented]() at
+and memory usage. Building off of Felix’s [work](https://github.com/felixge/go-observability-bench) which he [presented](https://www.gophercon.com/agenda/session/596212) at
 GopherCon 2021.
 
 * Benchmarking different workloads in a loop, measuring
