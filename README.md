@@ -70,3 +70,13 @@ GopherCon 2021.
     * Use external tools to profile the benchmarks.
     * For benchmarking profiler overhead as part of continuous integration, would want to be aware of things like the effect on GC that might lead to misleading results.
     * Benchmarking real workloads over longer durations would likely provide more meaningful results, especially for profile memory overhead.
+
+## Profile sizes
+
+* I took a brief look at profile sizes as well on my Macbook. Intuitively, I would expect profiles to get bigger as the profile runs for longer, but to grow at a decreasing rate. This is because the profiles grow with the number of unique stack traces observed, and over time more and more of the same stack straces should be covered.
+* I ran several runs of increasing length for each workload. Here's what I saw (coming from `results/sizes.csv`)
+
+![Increase in profile size over time](results/profile-sizes.png)
+
+* As expected, the profiles do get bigger over time, but less so for longer durations. It kind of looks like `O(sqrt(time))` growth.
+  * There's probably some literature on this kind of thing, since it sort of reminds me of the [coupon collector problem](https://en.wikipedia.org/wiki/Coupon_collector%27s_problem)
