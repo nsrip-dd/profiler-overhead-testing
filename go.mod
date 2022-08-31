@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/felixge/go-observability-bench v0.0.0-20220110140026-db6128b8ac3e
+	github.com/nsrip-dd/cgotraceback v0.0.0-20220828141303-8351b66caba6
 	github.com/pkg/profile v1.6.0
 )
 

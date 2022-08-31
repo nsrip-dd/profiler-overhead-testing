@@ -31,6 +31,8 @@ import (
 	"github.com/pkg/profile"
 )
 
+var usingCgotraceback bool
+
 // ByteCounter is an io.Writer which records how many bytes have been written.
 type ByteCounter int64
 
@@ -68,6 +70,9 @@ func main() {
 		}()
 	}
 
+	if len(os.Getenv("DISABLE_MEM_PROFILE")) > 0 {
+		runtime.MemProfileRate = 0
+	}
 	if *mem {
 		defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
 	}
@@ -96,7 +101,7 @@ func main() {
 	*profiles = strings.Join(enabledProfs, ";")
 
 	if *header {
-		fmt.Println("name,iters,ns,cpu-ns,profiles,profile-bytes,concurrency")
+		fmt.Println("name,iters,ns,cpu-ns,profiles,profile-bytes,concurrency,using-cgotraceback")
 	}
 	for i := 0; i < *repeat; i++ {
 		bc := new(ByteCounter)
@@ -173,6 +178,7 @@ func (r Result) ToRecord() []string {
 		r.Profiles,
 		strconv.FormatInt(r.ProfileBytes, 10),
 		strconv.FormatInt(int64(r.Concurrency), 10),
+		strconv.FormatBool(usingCgotraceback),
 	}
 }
 
@@ -184,9 +190,9 @@ func ConcurrentRunner(w workload.Workload, name string, duration time.Duration, 
 	time.AfterFunc(duration, func() { close(done) })
 
 	type runInfo struct {
-		iters int
+		iters   int
 		elapsed time.Duration
-		err error
+		err     error
 	}
 	ch := make(chan runInfo, concurrency)
 	run := func() {
@@ -224,7 +230,7 @@ func ConcurrentRunner(w workload.Workload, name string, duration time.Duration, 
 		go run()
 	}
 	res = Result{
-		Name:    name,
+		Name: name,
 	}
 	for i := 0; i < concurrency; i++ {
 		info := <-ch
